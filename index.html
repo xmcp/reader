@@ -1,0 +1,118 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link href="http://libs.useso.com/js/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="http://libs.useso.com/js/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://libs.useso.com/js/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <title>Reader</title>
+    <style>
+        body {
+            background-color: #eee;
+        }
+        #container {
+            padding: 7em 2em 7em 2em;
+            font-family: '微软雅黑' !important;
+            margin: auto;
+            font-size: 18px;
+            max-width: 800px; min-height: 100%;
+            background-color: white;
+        }
+        #txt {
+            width: 100%;
+            height: 12em;
+            display: block;
+        }
+        #txtbtn {
+            position: fixed;
+            top: 10px; right: 10px;
+        }
+        .sub {
+            width: calc(20% - 4px);
+            display: inline-block;
+        }
+    </style>
+    <style id="js-style">
+        #container>p {
+            margin-bottom: 1em;
+        }
+    </style>
+    <script>
+        function load() {
+            var lines=$('#txt').val().split('\n'),
+                container=document.getElementById('container');
+            
+            $(container)
+                .text('')
+                .css('font-size',$('#fontsize').val())
+                .css('color',$('#color').val())
+                .css('background-color',$('#bgcolor').val())
+                .css('max-width',$('#maxwidth').val());
+            $('#js-style')
+                .text('#container>p{margin-bottom:'+$('#margin').val()+';}');
+            
+            for(var pos=0;pos<lines.length;pos++) {
+                var elem=document.createElement('p');
+                elem.textContent=lines[pos];
+                container.appendChild(elem);
+            }
+            calc();
+            $('#myModal').modal('hide');
+        }
+        function calc() {
+            $('#prog').text(
+                Math.ceil((document.body.clientHeight+$(window).scrollTop())*100/$(document).height())+' %'
+            );
+        }
+    </script>
+</head>
+<body onscroll="calc()">
+    <button type="button" id="txtbtn" class="btn btn-default" data-toggle="modal" data-target="#myModal">
+        <span class="glyphicon glyphicon-book"></span>
+        &nbsp;<span id="prog">加载</span>
+    </button>
+    
+    <div id="container">
+        <p>点击右上角的按钮加载文本。</p>
+    </div>
+    
+    <div class="modal fade" id="myModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+            <h4 class="modal-title">加载文本</h4>
+        </div>
+        <div class="modal-body">
+            <textarea id="txt" class="form-control" placeholder="粘贴文本……"></textarea>
+            <br>
+            <div class="sub"><div class="input-group">
+                <span class="input-group-addon">字号</span>
+                <input type="text" id="fontsize" class="form-control" value="18px">
+            </div></div>
+            <div class="sub"><div class="input-group">
+                <span class="input-group-addon">段间距</span>
+                <input type="text" id="margin" class="form-control" value="1em">
+            </div></div>
+            <div class="sub"><div class="input-group">
+                <span class="input-group-addon">前景色</span>
+                <input type="text" id="color" class="form-control" value="black">
+            </div></div>
+            <div class="sub"><div class="input-group">
+                <span class="input-group-addon">背景色</span>
+                <input type="text" id="bgcolor" class="form-control" value="white">
+            </div></div>
+            <div class="sub"><div class="input-group">
+                <span class="input-group-addon">页宽</span>
+                <input type="text" id="maxwidth" class="form-control" value="800px">
+            </div></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button type="button" class="btn btn-primary" onclick="load()">加载</button>
+        </div>
+    </div></div></div>
+</body>
+</html>
