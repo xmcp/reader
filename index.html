@@ -23,6 +23,9 @@
             background-color: white;
             box-shadow: 0 0 25px rgba(0,0,0,.25);
         }
+        #container>p {
+            min-height: 1em;
+        }
         #txt {
             width: 100%;
             height: 12em;
@@ -31,6 +34,20 @@
         #txtbtn {
             position: fixed;
             top: 10px; right: 10px;
+        }
+        #infobar {
+            font-family: Consolas, monospace;
+            position: fixed;
+            bottom: 10px; right: 15px;
+            text-align: right;
+        }
+        #infobar>p {
+            margin: 0;
+        }
+        #infoswitch {
+            float: right;
+            background-color: transparent;
+            border: 0; padding: 10px;
         }
         .sub {
             width: calc(20% - 4px);
@@ -43,6 +60,28 @@
         }
     </style>
     <script>
+        $(function() {
+            try {
+                navigator.getBattery().then(function(battery) {
+                    function update() {
+                        $('#battery-status').html(
+                            (battery.charging?'<span class="glyphicon glyphicon-flash"></span>':'')+parseInt(battery.level*10000)/100+'%'
+                        );
+                    }
+                    battery.onchargingchange=battery.onlevelchange=update;
+                    update();
+                });
+            } catch(_) {}
+            function gettime() {
+                var time=new Date();
+                $('#timebar').text(
+                    (time.getHours()<10?('0'+time.getHours()):time.getHours())+':'+
+                    (time.getMinutes()<10?('0'+time.getMinutes()):time.getMinutes())
+                );
+            }
+            gettime();
+            setInterval(gettime,1000);
+        });
         function load() {
             var lines=$('#txt').val().split('\n'),
                 container=document.getElementById('container');
@@ -69,6 +108,9 @@
                 Math.ceil((document.body.clientHeight+$(window).scrollTop())*100/$(document).height())+'%'
             );
         }
+        function infoswitch() {
+            $('#infobar>p').fadeToggle(200);
+        }
     </script>
 </head>
 <body onscroll="calc()">
@@ -76,6 +118,12 @@
         <span class="glyphicon glyphicon-book hidden-xs"></span>
         <span id="prog">加载</span>
     </button>
+    
+    <div id="infobar">
+        <p><span id="battery-status"></span></p>
+        <p><span id="timebar">--:--</span></p>
+        <button type="button" id="infoswitch" onclick="infoswitch()"><span class="caret"></span></button>
+    </div>
     
     <div id="container">
         <p>点击右上角的按钮加载文本</p>
