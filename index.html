@@ -21,6 +21,7 @@
             font-size: 18px;
             max-width: 800px; min-height: 100%;
             background-color: white;
+            box-shadow: 0 0 25px rgba(0,0,0,.25);
         }
         #txt {
             width: 100%;
@@ -71,13 +72,15 @@
     </script>
 </head>
 <body onscroll="calc()">
-    <button type="button" id="txtbtn" class="btn btn-default" data-toggle="modal" data-target="#myModal">
-        <span class="glyphicon glyphicon-book"></span>
-        &nbsp;<span id="prog">加载</span>
+    <button type="button" id="txtbtn" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal">
+        <span class="glyphicon glyphicon-book hidden-xs"></span>
+        <span id="prog">加载</span>
     </button>
     
     <div id="container">
-        <p>点击右上角的按钮加载文本。</p>
+        <p>点击右上角的按钮加载文本</p>
+        <p>( ゜- ゜)つロ</p>
+        <p><a href="https://github.com/xmcp/reader">Reader by @xmcp</a></p>
     </div>
     
     <div class="modal fade" id="myModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
