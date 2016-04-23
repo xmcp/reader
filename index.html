@@ -13,6 +13,10 @@
     <style>
         body {
             background-color: #eee;
+            transition: background-color .25s ease;
+        }
+        body.dragged {
+            background-color: #ccf;
         }
         #container {
             padding: 7em 2em 7em 2em;
@@ -23,6 +27,13 @@
             background-color: white;
             box-shadow: 0 0 25px rgba(0,0,0,.25);
         }
+        .x-ray {
+            width: 50%; height: 4px;
+            background-color: #f77;
+            position: absolute;
+            transition: top .15s ease-in .5s;
+            z-index: -2;
+        }
         #container>p {
             min-height: 1em;
         }
@@ -32,7 +43,13 @@
             background-color: #ccc;
             height: 4px;
             margin-top: -2px;
-            z-index: -1;
+            z-index: -3;
+        }
+        #dropper {
+            top: 0; left: 0;
+            height: 100%; width: 100%;
+            position: fixed;
+            opacity: 0;
         }
         #file-load {
             display: inline-block;
@@ -93,18 +110,32 @@
             gettime();
             setInterval(gettime,1000);
             window.reading_prog=100;
-            $(window).on('beforeunload',function() {
-                if(reading_prog<98)
-                    return '离开此页后，当前的文本也将关闭';
-            });
-            $(window).on('keydown',function(event) {
-                if(event.keyCode===36 || event.keyCode===35) // home & end
-                    if($(document).height()>10*document.body.clientHeight && !confirm('注意：您按下了 '+event.key+' 键。'))
-                        event.preventDefault();
-            });
+            $(window)
+                .on('beforeunload',function() {
+                    if(reading_prog<98)
+                        return '离开此页后，当前的文本也将关闭';
+                })
+                .on('keydown',function(event) {
+                    if(event.keyCode===36 || event.keyCode===35) // home & end
+                        if($(document).height()>10*document.body.clientHeight && !confirm('注意：您按下了 '+event.key+' 键。'))
+                            event.preventDefault();
+                });
+            $('#dropper')
+                .on('dragenter',function() {$('body').addClass('dragged');})
+                .on('dragleave',function() {$('body').removeClass('dragged');})
+                .on('dragover',function(event) {event.preventDefault();})
+                .on('drop',function(event) {
+                    event.preventDefault();
+                    $('body').removeClass('dragged');
+                    var fr=new FileReader();
+                    fr.onload=function() {
+                        load(fr.result);
+                    }
+                    fr.readAsText(event.originalEvent.dataTransfer.files[0]);
+                });
         });
-        function load() {
-            var lines=$('#txt').val().split('\n'),
+        function load(override_txt_val) {
+            var lines=(override_txt_val||$('#txt').val()).split('\n'),
                 container=document.getElementById('container');
             
             $(container)
@@ -134,7 +165,9 @@
         function calc() {
             window.reading_prog=(document.body.clientHeight+$(window).scrollTop())*100/$(document).height();
             $('#prog').text(Math.ceil(reading_prog)+'%');
-            $('#light').css('top',reading_prog+'%')
+            $('#light').css('top',reading_prog+'%');
+            $('#x-top').css('top',$(window).scrollTop());
+            $('#x-bottom').css('top',Math.min(document.body.clientHeight+$(window).scrollTop(),$(document).height()-4));
         }
         function infoswitch() {
             $('#infobar>p').fadeToggle(200);
@@ -154,12 +187,15 @@
     </div>
     
     <div id="light"></div>
+    <div id="dropper"></div>
     
     <div id="container">
         <p>点击右上角的按钮加载文本</p>
         <p>( ゜- ゜)つロ</p>
         <p><a href="https://github.com/xmcp/reader">Reader by @xmcp</a></p>
     </div>
+    <div class="x-ray" id="x-top" style="margin-top: -4px;"></div>
+    <div class="x-ray" id="x-bottom"></div>
     
     <div class="modal fade" id="myModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
         <div class="modal-header">
@@ -178,7 +214,7 @@
             </div></div>
             <div class="sub"><div class="input-group">
                 <span class="input-group-addon">段间距</span>
-                <input type="text" id="margin" class="form-control" value="1em">
+                <input type="text" id="margin" class="form-control" value="0em">
             </div></div>
             <div class="sub"><div class="input-group">
                 <span class="input-group-addon">前景色</span>
