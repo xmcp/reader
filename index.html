@@ -76,7 +76,7 @@
                 navigator.getBattery().then(function(battery) {
                     function update() {
                         $('#battery-status').html(
-                            (battery.charging?'<span class="glyphicon glyphicon-flash"></span>':'')+parseInt(battery.level*10000)/100+'%'
+                            (battery.charging?'':('<span class="glyphicon glyphicon-flash"></span>'+parseInt(battery.level*10000)/100+'%'))
                         );
                     }
                     battery.onchargingchange=battery.onlevelchange=update;
@@ -96,6 +96,11 @@
             $(window).on('beforeunload',function() {
                 if(reading_prog<98)
                     return '离开此页后，当前的文本也将关闭';
+            });
+            $(window).on('keydown',function(event) {
+                if(event.keyCode===36 || event.keyCode===35) // home & end
+                    if($(document).height()>10*document.body.clientHeight && !confirm('注意：您按下了 '+event.key+' 键。'))
+                        event.preventDefault();
             });
         });
         function load() {
