@@ -34,6 +34,9 @@
             margin-top: -2px;
             z-index: -1;
         }
+        #file-load {
+            display: inline-block;
+        }
         #txt {
             width: 100%;
             height: 12em;
@@ -116,6 +119,13 @@
             calc();
             $('#myModal').modal('hide');
         }
+        function loadfile(fil) {
+            var fr=new FileReader();
+            fr.onload=function() {
+                $('#txt').val(fr.result);
+            }
+            fr.readAsText(fil.files[0]);
+        }
         function calc() {
             window.reading_prog=(document.body.clientHeight+$(window).scrollTop())*100/$(document).height();
             $('#prog').text(Math.ceil(reading_prog)+'%');
@@ -149,7 +159,10 @@
     <div class="modal fade" id="myModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
-            <h4 class="modal-title">加载文本</h4>
+            <h4 class="modal-title">
+                加载文本&nbsp;
+                <input type="file" id="file-load" onchange="loadfile(this)">
+            </h4>
         </div>
         <div class="modal-body">
             <textarea id="txt" class="form-control" placeholder="粘贴文本……"></textarea>
