@@ -1,4 +1,4 @@
-# Reader Art Online （逃
+# Reader
 
 HTML + Javascript 小说阅读器
 
@@ -6,6 +6,4 @@ HTML + Javascript 小说阅读器
 
 截图：
 
-![screenshot1](https://cloud.githubusercontent.com/assets/6646473/12579690/c7736e32-c464-11e5-9ca6-1de332cb92da.png)
-
-![screenshot2](https://cloud.githubusercontent.com/assets/6646473/12579714/fbd6bc06-c464-11e5-8ab8-5da4e5c31e41.png)
+![screenshot](https://cloud.githubusercontent.com/assets/6646473/16270955/a613680c-38ca-11e6-9579-dd8e1bdd138c.png)
