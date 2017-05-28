@@ -14,15 +14,17 @@
         body {
             background-color: #eee;
             transition: background-color .25s ease;
+            overflow-x: hidden;
         }
         body.dragged {
             background-color: #ccf;
         }
         #container {
-            padding: 7em 2em 7em 2em;
+            padding: 7em 1em 7em 1em;
             font-family: '微软雅黑' !important;
             margin: auto;
             font-size: 18px;
+            width: calc(100% - 2em);
             max-width: 800px; min-height: 100%;
             background-color: white;
             box-shadow: 0 0 25px rgba(0,0,0,.25);
@@ -44,12 +46,6 @@
             height: 4px;
             margin-top: -2px;
             z-index: -3;
-        }
-        #dropper {
-            top: 0; left: 0;
-            height: 100%; width: 100%;
-            position: fixed;
-            opacity: 0;
         }
         #file-load {
             display: inline-block;
@@ -113,6 +109,7 @@
             gettime();
             setInterval(gettime,1000);
             window.reading_prog=100;
+            window.drag_counter=0;
             $(window)
                 .on('beforeunload',function() {
                     if(reading_prog<98)
@@ -123,12 +120,19 @@
                         if($(document).height()>10*document.body.clientHeight && !confirm('注意：您按下了 '+event.key+' 键。'))
                             event.preventDefault();
                 });
-            $('#dropper')
-                .on('dragenter',function() {$('body').addClass('dragged');})
-                .on('dragleave',function() {$('body').removeClass('dragged');})
+            $('body')
+                .on('dragenter',function() {
+                    window.drag_counter++;
+                    $('body').addClass('dragged');
+                })
+                .on('dragleave',function() {
+                    if(--window.drag_counter==0)
+                        $('body').removeClass('dragged');
+                })
                 .on('dragover',function(event) {event.preventDefault();})
                 .on('drop',function(event) {
                     event.preventDefault();
+                    window.drag_counter=0;
                     $('body').removeClass('dragged');
                     var fr=new FileReader();
                     fr.onload=function() {
@@ -190,7 +194,6 @@
     </div>
     
     <div id="light"></div>
-    <div id="dropper"></div>
     
     <div id="container">
         <p>点击右上角的按钮加载文本</p>
